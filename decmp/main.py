@@ -1,3 +1,10 @@
+# /// script
+# requires-python = ">=3.11"
+# dependencies = [
+#     "tree-sitter",
+#     "tree-sitter-javascript",
+# ]
+# ///
 import subprocess
 import os
 import argparse
@@ -110,7 +117,7 @@ def parse_file(export_path: str, path: str):
         for node in captures["function"]:
             node_text = node.text.decode()
             functions.append({
-                "name": f"{formatted_path}:{node.child_by_field_name("name").text.decode()}()",
+                "name": f"{formatted_path}:{node.child_by_field_name('name').text.decode()}()",
                 "line_count": len(node_text.splitlines()),
                 "code": node_text
             })
@@ -148,7 +155,7 @@ def match(args):
 
     matching_line_count = 0
     for file_path in file_paths:
-        with open(Path(args.source_path) / file_path, 'r') as file:
+        with open(Path(args.source_path) / file_path, "r", encoding="utf-8") as file:
             for line in file:
                 # Look for the MATCH: pattern
                 if "MATCH:" in line:
@@ -165,15 +172,14 @@ def match(args):
                         })
                         matching_line_count += line_count
 
-
     matches = sorted(matches, key=lambda x: x["name"])
     total_line_count = db["total_line_count"]
     for match in matches:
-        print(f"    function {match["name"]} {C.GREEN}matches{C.RESET} {match["source"]}: {match["line_count"]} loc")
+        print(f'    function {match["name"]} {C.GREEN}matches{C.RESET} {match["source"]}: {match["line_count"]} loc')
 
     print()
-    print(f"Total accuracy of port: {C.GREEN}{(matching_line_count/total_line_count)*100:.2g}%{C.RESET} across {len(db["functions"])} functions")
-    print(f"Matched {len(matches)} out of {len(db["functions"])} functions")
+    print(f"Total accuracy of port: {C.GREEN}{(matching_line_count/total_line_count)*100:.2g}%{C.RESET} across {len(db['functions'])} functions")
+    print(f"Matched {len(matches)} out of {len(db['functions'])} functions")
     print(f"Matched {matching_line_count} loc out of {total_line_count} loc")
 
 
@@ -201,7 +207,7 @@ sub_match = subcommands.add_parser(
     help="Matches Godot and ActionScript functions, reporting on the total match between original and ported code.",
 )
 sub_match.add_argument('--db-path', help='Where to read the decompilation databse `decomp_db.json` from', default="decomp_db.json")
-sub_match.add_argument('--source_path', help='Path to the Godot source code', default="src/")
+sub_match.add_argument('--source-path', help='Path to the Godot source code', default="../src/")
 sub_match.set_defaults(func=match)
 
 args = parser.parse_args()
