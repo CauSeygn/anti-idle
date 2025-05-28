@@ -1,8 +1,6 @@
 using Godot;
-using static Godot.GD;
-using System;
 
-namespace AntiIdle.Loader;  
+namespace AntiIdle.Loader;
 
 // MATCH: frame_1/DoAction.as
 public partial class Loader : Node
@@ -27,7 +25,8 @@ public partial class Loader : Node
             _root.offlineVersion = true;
         }
         var globalSetting = SharedObject.getLocal("ATG_Global","/");
-        _root.saveGlobal = _root.globalSetting.data;
+        // TODO: load from save
+        //_root.saveGlobal = _root.globalSetting;
         Stage.showMenu = false;
         fscommand("trapallkeys",true);
         if(_root.kongregate_username == undefined && _root.saveGlobal.aurianMode != true)
